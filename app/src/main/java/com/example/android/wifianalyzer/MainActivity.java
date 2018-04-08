@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     public int calculateStrength(int input, int numLevel){
         int MAX_RSSI = -30;
-        int MIN_RSSI = -80;
+        int MIN_RSSI = -70;
         if(input<MIN_RSSI){
             return 0;
         } else{
