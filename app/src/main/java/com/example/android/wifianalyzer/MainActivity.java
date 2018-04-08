@@ -1,7 +1,5 @@
 package com.example.android.wifianalyzer;
 
-import android.content.BroadcastReceiver;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +11,7 @@ import android.widget.*;
 import android.view.*;
 import java.util.*;
 import android.content.pm.*;
-import android.content.Context;
+import android.view.View.OnClickListener;
 
 //http://www.includehelp.com/code-snippets/android-application-to-display-available-wifi-network-and-connect-with-specific-network.aspx
 //https://stackoverflow.com/questions/7050101/wifi-scan-results-broadcast-receiver-not-working/7050155
@@ -29,13 +27,14 @@ public class MainActivity extends AppCompatActivity {
     WifiManager mainWifi;
     List<ScanResult> scanList;
     Handler handler = new Handler();
+    private int num = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        scanList = new ArrayList<ScanResult>();
 
         Runnable runnable = new Runnable() {
             @Override
@@ -81,40 +80,58 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
         } else{
+            mainWifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             scanWifi();
         }
     }
 
     public void scanWifi(){
-        mainWifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        num++;
         mainWifi.startScan();
         Log.i(TAG, "started scan with result");
-        scanList = mainWifi.getScanResults();
-        Collections.sort(scanList, new Comparator<ScanResult>(){
+        List<ScanResult> newScanList = mainWifi.getScanResults();
+        newScanList = newScanList.subList(0,Math.min(10, newScanList.size()));
+        Collections.sort(newScanList, new Comparator<ScanResult>(){
             public int compare(ScanResult a, ScanResult b){
                 return b.level-a.level;
             }
         });
         LinearLayout ll = findViewById(R.id.wifi_container);
         ll.removeAllViews();
-        for (int index = 0; index < Math.min(10, scanList.size()); index++) {
-            ScanResult scanResult = scanList.get(index);
-            LayoutInflater layout = getLayoutInflater();
-            View v = layout.inflate(R.layout.wifi_elem,null);
-            TextView tv = (TextView) v.findViewById(R.id.elem);
-            tv.setText(scanResult.SSID + "\n\t\t" + scanResult.BSSID + "\n\t\tLevel: "
-                    + scanResult.level + "dBm\n\t\tStrength: " + calculateStrength(scanResult.level,100)
-                    + "\n\t\tFreq: " + scanResult.frequency);
-            ll.addView(v);
+        for (ScanResult scanResult:newScanList) {
+
+            Button myButton = new Button(this);
+            myButton.setText(num+" "+scanResult.SSID+":\t"+calculateStrength(scanResult.level,100));
+            myButton.setOnClickListener(mThisButtonListener);
+            myButton.setTag(scanResult);
+
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.FILL_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            ll.addView(myButton,p);
         }
     }
+
+    private OnClickListener mThisButtonListener = new OnClickListener() {
+        public void onClick(View v) {
+            ScanResult sr = (ScanResult) v.getTag();
+            String text = sr.SSID + "\n\t\t" + sr.BSSID + "\n\t\tLevel: "
+                    + sr.level + "dBm\n\t\tStrength: " + calculateStrength(sr.level,100)
+                    + "\n\t\tFreq: " + sr.frequency;
+            Toast.makeText(MainActivity.this, text,
+                    Toast.LENGTH_LONG).show();
+        }
+    };
 
     public int calculateStrength(int input, int numLevel){
         int MAX_RSSI = -30;
         int MIN_RSSI = -70;
         if(input<MIN_RSSI){
             return 0;
-        } else{
+        } else if(input > MAX_RSSI){
+            return 99;
+        }else{
             return (input-MIN_RSSI)*(numLevel - 1)/(MAX_RSSI - MIN_RSSI);
         }
     }
@@ -130,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, 2000);
+        mainWifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         scanWifi();
     }
 
