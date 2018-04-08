@@ -102,8 +102,20 @@ public class MainActivity extends AppCompatActivity {
             LayoutInflater layout = getLayoutInflater();
             View v = layout.inflate(R.layout.wifi_elem,null);
             TextView tv = (TextView) v.findViewById(R.id.elem);
-            tv.setText(scanResult.SSID + "\n\t\tlevel: " + scanResult.level + "dBm\n\t\tfreq: " + scanResult.frequency);
+            tv.setText(scanResult.SSID + "\n\t\t" + scanResult.BSSID + "\n\t\tLevel: "
+                    + scanResult.level + "dBm\n\t\tStrength: " + calculateStrength(scanResult.level,100)
+                    + "\n\t\tFreq: " + scanResult.frequency);
             ll.addView(v);
+        }
+    }
+
+    public int calculateStrength(int input, int numLevel){
+        int MAX_RSSI = -30;
+        int MIN_RSSI = -80;
+        if(input<MIN_RSSI){
+            return 0;
+        } else{
+            return (input-MIN_RSSI)*(numLevel - 1)/(MAX_RSSI - MIN_RSSI);
         }
     }
 
