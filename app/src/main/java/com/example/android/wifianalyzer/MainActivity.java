@@ -28,30 +28,25 @@ public class MainActivity extends AppCompatActivity {
 
     WifiManager mainWifi;
     List<ScanResult> scanList;
+    Handler handler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
-        } else{
-            mainWifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-            mainWifi.startScan();
-            Log.i(TAG, "started scan with result");
-            scanList = mainWifi.getScanResults();
-            for (ScanResult scanResult : scanList) {
-                LayoutInflater layout = getLayoutInflater();
-                View v = layout.inflate(R.layout.wifi_elem,null);
-                TextView tv = (TextView) v.findViewById(R.id.elem);
-                tv.setText(scanResult.SSID + "\n\t\tlevel: " + scanResult.level + "dBm\n\t\tfreq: " + scanResult.frequency);
-                LinearLayout ll = findViewById(R.id.wifi_container);
-                ll.addView(v);
-            }
-        }
 
-        /*
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                requestAndScan();
+                handler.postDelayed(this, 1000);
+            }
+        };
+        handler.postDelayed(runnable, 1000);
+
+        /* may be useful if you want to scan for unique wifi sources
         wifiListAdapter = new WifiListAdapter(ConnectToInternetActivity.this, mItems);
         lv.setAdapter(wifiListAdapter);
         int size = results.size();
@@ -80,10 +75,39 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-
-
-
     }
+
+    public void requestAndScan(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+        } else{
+            scanWifi();
+        }
+    }
+
+    public void scanWifi(){
+        mainWifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        mainWifi.startScan();
+        Log.i(TAG, "started scan with result");
+        scanList = mainWifi.getScanResults();
+        Collections.sort(scanList, new Comparator<ScanResult>(){
+            public int compare(ScanResult a, ScanResult b){
+                return b.level-a.level;
+            }
+        });
+        LinearLayout ll = findViewById(R.id.wifi_container);
+        ll.removeAllViews();
+        for (int index = 0; index < Math.min(10, scanList.size()); index++) {
+            ScanResult scanResult = scanList.get(index);
+            LayoutInflater layout = getLayoutInflater();
+            View v = layout.inflate(R.layout.wifi_elem,null);
+            TextView tv = (TextView) v.findViewById(R.id.elem);
+            tv.setText(scanResult.SSID + "\n\t\tlevel: " + scanResult.level + "dBm\n\t\tfreq: " + scanResult.frequency);
+            ll.addView(v);
+        }
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
@@ -94,28 +118,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, 2000);
-        mainWifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        mainWifi.startScan();
-        Log.i(TAG, "started scan with result");
-        scanList = mainWifi.getScanResults();
-        for (ScanResult scanResult : scanList) {
-            LayoutInflater layout = getLayoutInflater();
-            View v = layout.inflate(R.layout.wifi_elem,null);
-            TextView tv = (TextView) v.findViewById(R.id.elem);
-            tv.setText(scanResult.SSID + "\n\t\tlevel: " + scanResult.level + "dBm\n\t\tfreq: " + scanResult.frequency);
-            LinearLayout ll = findViewById(R.id.wifi_container);
-            ll.addView(v);
-        }
+        scanWifi();
     }
 
     private static String getIpAddress(WifiInfo wifiInfo) {
-        String result;
         int ip = wifiInfo.getIpAddress();
-
-        result = String.format("%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff),
+        return String.format("%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff),
                 (ip >> 24 & 0xff));
-
-        return result;
     }
 
 
