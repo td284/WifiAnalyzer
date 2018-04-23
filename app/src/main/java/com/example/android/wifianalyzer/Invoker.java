@@ -26,7 +26,6 @@ public class Invoker extends PApplet{
     public Context context;
 
     public Invoker(Context context){
-        Log.i("context", Boolean.toString(context == null));
         this.context = context;
     }
 
@@ -79,7 +78,6 @@ public class Invoker extends PApplet{
     }
 
     public void updateList(List<Signal> newList){
-
         List<String> idsToRemove = new ArrayList<>();
 
         for(Node node: forceDirectedGraph.nodes){
@@ -92,7 +90,6 @@ public class Invoker extends PApplet{
                 }
             }
             if(!keep) {
-                Log.i("fdg", "remove");
                 idsToRemove.add(node.getID());
             }
         }
@@ -111,10 +108,7 @@ public class Invoker extends PApplet{
             if(add) {
                 addNode(newList.get(k).getName(),newList.get(k).getId(),newList.get(k).getStrength()/10,newList.get(k).getFreq());
             }
-
         }
-        Log.i("fdg", Integer.toString(forceDirectedGraph.nodes.size()));
-
     }
 
     public int calculateStrength(int input, int numLevel){

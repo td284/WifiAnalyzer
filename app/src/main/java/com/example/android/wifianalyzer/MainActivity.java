@@ -65,10 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 for(Signal signal:wifiSignals.values()){
                     signals.add(signal);
                 }
-
                 Collections.sort(signals);
                 invoker.updateList(signals.subList(0,Math.min(5,signals.size())));
-
                 handler.postDelayed(this, 2000);
             }
         };
