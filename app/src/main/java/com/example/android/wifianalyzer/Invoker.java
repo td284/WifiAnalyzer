@@ -69,8 +69,8 @@ public class Invoker extends PApplet{
         return forceDirectedGraph;
     }
 
-    public void addNode(String name, String id, float mass, int frequency){
-        forceDirectedGraph.addNode(name, id,mass,frequency);
+    public void addNode(String name, String id, float mass, int frequency, String venue, int level){
+        forceDirectedGraph.addNode(name, id,mass,frequency,venue,level);
     }
 
     public void removeNode(String id){
@@ -85,7 +85,7 @@ public class Invoker extends PApplet{
             for(int j = 0; j < newList.size(); j++){
                 if(node.getID().equals(newList.get(j).getId())){
                     keep = true;
-                    forceDirectedGraph.changeSize(node.getID(), WifiManager.calculateSignalLevel(newList.get(j).getLevel(),100)*3);
+                    forceDirectedGraph.changeSize(node.getID(), calculateStrength(newList.get(j).getLevel(),100)*3);
                     break;
                 }
             }
@@ -106,14 +106,15 @@ public class Invoker extends PApplet{
                 }
             }
             if(add) {
-                addNode(newList.get(k).getName(),newList.get(k).getId(),newList.get(k).getStrength()/10,newList.get(k).getFreq());
+                addNode(newList.get(k).getName(),newList.get(k).getId(),newList.get(k).getStrength()/10,
+                        newList.get(k).getFreq(),newList.get(k).getVenue(),newList.get(k).getLevel());
             }
         }
     }
 
     public int calculateStrength(int input, int numLevel){
         int MAX_RSSI = -30;
-        int MIN_RSSI = -70;
+        int MIN_RSSI = -80;
         if(input<MIN_RSSI){
             return 0;
         } else if(input > MAX_RSSI){

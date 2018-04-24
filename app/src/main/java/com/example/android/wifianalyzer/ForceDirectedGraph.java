@@ -87,8 +87,8 @@ public class ForceDirectedGraph extends Viewport{
     }
   }
 
-  public void addNode(String name, String id, float mass, int frequency){
-    Node newNode = new Node(name, id,mass,frequency,canvas);
+  public void addNode(String name, String id, float mass, int frequency, String venue, int level){
+    Node newNode = new Node(name, id,mass,frequency,venue, canvas, level);
     float nodeSizeRatio;
     if(this.getWidth() < this.getHeight())
       nodeSizeRatio = this.getWidth() / (mass * 5.0f); //ad-hoc
@@ -256,6 +256,8 @@ public class ForceDirectedGraph extends Viewport{
         newIntent.putExtra("id",node.getID());
         newIntent.putExtra("mass",node.getMass());
         newIntent.putExtra("frequency",node.getFrequency());
+        newIntent.putExtra("venue",node.getVenue());
+        newIntent.putExtra("strength",node.getLevel());
         float[] hist = new float[]{1.2f, 2.4f, 3.6f};
         newIntent.putExtra("hist",hist);
 

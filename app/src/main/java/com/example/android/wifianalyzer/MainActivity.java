@@ -127,9 +127,9 @@ public class MainActivity extends AppCompatActivity {
                 for (ScanResult wifi: wifiScanResults) {
                     if (oldWifi.getId().equals(wifi.BSSID)) {
                         keep = true;
-                        oldWifi.addToHistory(WifiManager.calculateSignalLevel(wifi.level, 100));
+                        oldWifi.addToHistory(calculateStrength(wifi.level, 100));
                         oldWifi.setLevel(wifi.level);
-                        oldWifi.setStrength(WifiManager.calculateSignalLevel(wifi.level, 100));
+                        oldWifi.setStrength(calculateStrength(wifi.level, 100));
                         break;
                     }
                 }
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     public int calculateStrength(int input, int numLevel){
         int MAX_RSSI = -30;
-        int MIN_RSSI = -70;
+        int MIN_RSSI = -80;
         if(input<MIN_RSSI){
             return 0;
         } else if(input > MAX_RSSI){

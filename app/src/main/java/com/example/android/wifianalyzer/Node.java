@@ -10,6 +10,8 @@ public class Node extends PApplet{
   private String id;
   private float mass;
   private int frequency;
+  private String venue;
+  private int level;
 
   private ArrayList<Node> adjacents;
   private ArrayList<Float> naturalSpringLengths;
@@ -23,11 +25,13 @@ public class Node extends PApplet{
   private boolean isHighlighted;
   private Invoker canvas;
 
-  public Node(String name, String id, float mass, int frequency, Invoker canvas){
+  public Node(String name, String id, float mass, int frequency, String venue, Invoker canvas, int level){
     this.name = name;
     this.id = id;
     this.mass = mass;
     this.frequency = frequency;
+    this.venue = venue;
+    this.level = level;
 
     this.adjacents = new ArrayList<Node>();
     this.naturalSpringLengths = new ArrayList<Float>();
@@ -73,6 +77,8 @@ public class Node extends PApplet{
     return this.mass;
   }
   public int getFrequency() {return this.frequency; }
+  public String getVenue() {return this.venue;}
+  public int getLevel() {return this.level;}
   public float getX(){
     return this.x;
   }
