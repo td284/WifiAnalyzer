@@ -4,6 +4,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +16,6 @@ public class Signal implements Comparable {
     private String name; // SSID for wifi, name for bluetooth
     private String venue; // registered venue of access point (only wifi)
     private String type; //bluetooth or wifi
-    private List<Integer> history;
 
 
     Signal(ScanResult wifi) {
@@ -26,8 +26,6 @@ public class Signal implements Comparable {
         this.name = wifi.SSID;
         this.venue = wifi.venueName.toString();
         this.type = "wifi";
-        this.history = new LinkedList<>();
-        this.history.add(this.strength);
     }
     Signal(BluetoothDevice bluetooth, int rssi) {
         this.id = bluetooth.getAddress();
@@ -35,8 +33,6 @@ public class Signal implements Comparable {
         this.strength = calculateStrength(rssi, 100);
         this.name = bluetooth.getName();
         this.type = "bluetooth";
-        this.history = new LinkedList<>();
-        this.history.add(this.strength);
     }
     @Override
     public int compareTo(Object o) {
@@ -80,13 +76,6 @@ public class Signal implements Comparable {
 
     public void setStrength(int strength){
         this.strength = strength;
-    }
-
-    public void addToHistory(int data){
-        this.history.add(data);
-        if(this.history.size()>20){
-            this.history.remove(0);
-        }
     }
 
     public int calculateStrength(int input, int numLevel) {

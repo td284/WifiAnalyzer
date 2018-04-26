@@ -3,9 +3,11 @@ package com.example.android.wifianalyzer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ForceDirectedGraph extends Viewport{
@@ -37,7 +39,6 @@ public class ForceDirectedGraph extends Viewport{
     this.canvas = canvas;
     this.context = context;
     this.lockedNode = null;
-    Log.i("context", Boolean.toString(context == null));
   }
 
   public void add(Node node){
@@ -49,6 +50,7 @@ public class ForceDirectedGraph extends Viewport{
     node1.add(node2, naturalSpringLength);
     node2.add(node1, naturalSpringLength);
   }
+
   private Node getNodeWith(String id){
     Node node = null;
     for(int i = 0; i < this.nodes.size(); i++){
@@ -87,8 +89,9 @@ public class ForceDirectedGraph extends Viewport{
     }
   }
 
-  public void addNode(String name, String id, float mass, int frequency, String venue, int level){
-    Node newNode = new Node(name, id,mass,frequency,venue, canvas, level);
+  public void addNode(String name, String id, float mass, int frequency, String venue, int level, ArrayList<Integer> hist){
+    Node newNode = new Node(name, id,mass,frequency,venue, canvas, level, hist);
+    newNode.getHist().add((int)mass*10);
     float nodeSizeRatio;
     if(this.getWidth() < this.getHeight())
       nodeSizeRatio = this.getWidth() / (mass * 5.0f); //ad-hoc
@@ -258,9 +261,7 @@ public class ForceDirectedGraph extends Viewport{
         newIntent.putExtra("frequency",node.getFrequency());
         newIntent.putExtra("venue",node.getVenue());
         newIntent.putExtra("strength",node.getLevel());
-        float[] hist = new float[]{1.2f, 2.4f, 3.6f};
-        newIntent.putExtra("hist",hist);
-
+        newIntent.putIntegerArrayListExtra("hist",node.getHist());
 
         context.startActivity(newIntent);
 

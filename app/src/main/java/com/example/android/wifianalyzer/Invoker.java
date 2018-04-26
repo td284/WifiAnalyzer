@@ -69,8 +69,8 @@ public class Invoker extends PApplet{
         return forceDirectedGraph;
     }
 
-    public void addNode(String name, String id, float mass, int frequency, String venue, int level){
-        forceDirectedGraph.addNode(name, id,mass,frequency,venue,level);
+    public void addNode(String name, String id, float mass, int frequency, String venue, int level,ArrayList<Integer> hist){
+        forceDirectedGraph.addNode(name, id,mass,frequency,venue,level,hist);
     }
 
     public void removeNode(String id){
@@ -86,6 +86,7 @@ public class Invoker extends PApplet{
                 if(node.getID().equals(newList.get(j).getId())){
                     keep = true;
                     forceDirectedGraph.changeSize(node.getID(), calculateStrength(newList.get(j).getLevel(),100)*3);
+                    node.addToHistory(calculateStrength(newList.get(j).getLevel(),100));
                     break;
                 }
             }
@@ -107,7 +108,7 @@ public class Invoker extends PApplet{
             }
             if(add) {
                 addNode(newList.get(k).getName(),newList.get(k).getId(),newList.get(k).getStrength()/10,
-                        newList.get(k).getFreq(),newList.get(k).getVenue(),newList.get(k).getLevel());
+                        newList.get(k).getFreq(),newList.get(k).getVenue(),newList.get(k).getLevel(),new ArrayList<Integer>());
             }
         }
     }

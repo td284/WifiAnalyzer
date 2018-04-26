@@ -67,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Collections.sort(signals);
                 invoker.updateList(signals.subList(0,Math.min(5,signals.size())));
-                handler.postDelayed(this, 2000);
+                handler.postDelayed(this, 1000);
             }
         };
-        handler.postDelayed(runnable, 2000);
+        handler.postDelayed(runnable, 1000);
     }
 
     @Override
@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 for (ScanResult wifi: wifiScanResults) {
                     if (oldWifi.getId().equals(wifi.BSSID)) {
                         keep = true;
-                        oldWifi.addToHistory(calculateStrength(wifi.level, 100));
                         oldWifi.setLevel(wifi.level);
                         oldWifi.setStrength(calculateStrength(wifi.level, 100));
                         break;

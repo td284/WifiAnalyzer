@@ -1,6 +1,7 @@
 package com.example.android.wifianalyzer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import processing.core.PApplet;
 
@@ -12,6 +13,7 @@ public class Node extends PApplet{
   private int frequency;
   private String venue;
   private int level;
+  private ArrayList<Integer> hist;
 
   private ArrayList<Node> adjacents;
   private ArrayList<Float> naturalSpringLengths;
@@ -25,13 +27,14 @@ public class Node extends PApplet{
   private boolean isHighlighted;
   private Invoker canvas;
 
-  public Node(String name, String id, float mass, int frequency, String venue, Invoker canvas, int level){
+  public Node(String name, String id, float mass, int frequency, String venue, Invoker canvas, int level, ArrayList<Integer> hist){
     this.name = name;
     this.id = id;
     this.mass = mass;
     this.frequency = frequency;
     this.venue = venue;
     this.level = level;
+    this.hist = hist;
 
     this.adjacents = new ArrayList<Node>();
     this.naturalSpringLengths = new ArrayList<Float>();
@@ -79,6 +82,7 @@ public class Node extends PApplet{
   public int getFrequency() {return this.frequency; }
   public String getVenue() {return this.venue;}
   public int getLevel() {return this.level;}
+  public ArrayList<Integer> getHist() {return this.hist;}
   public float getX(){
     return this.x;
   }
@@ -108,6 +112,13 @@ public class Node extends PApplet{
   }
   public float getNaturalSpringLengthAt(int index){
     return this.naturalSpringLengths.get(index);
+  }
+
+  public void addToHistory(int data){
+    hist.add(data);
+    if(hist.size()>20){
+      hist.remove(0);
+    }
   }
 
   public void draw(int color){
