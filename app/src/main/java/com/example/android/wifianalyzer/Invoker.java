@@ -77,20 +77,28 @@ public class Invoker extends PApplet{
         forceDirectedGraph.removeNode(id);
     }
 
-    public void updateList(List<Signal> newList){
+    public void updateList(HashMap<String, Signal> newSignals){
+
+        Log.i("plop", "size: " +forceDirectedGraph.nodes.size());
+
+        Log.i("plop", "====================");
+        for(Node node: forceDirectedGraph.nodes){
+            Log.i("plop", node.getID());
+        }
+
+        Log.i("plop", "====================");
+        for(Signal signal: newSignals.values()){
+            Log.i("plop", signal.getId());
+        }
+
         List<String> idsToRemove = new ArrayList<>();
 
         for(Node node: forceDirectedGraph.nodes){
-            boolean keep = false;
-            for(int j = 0; j < newList.size(); j++){
-                if(node.getID().equals(newList.get(j).getId())){
-                    keep = true;
-                    forceDirectedGraph.changeSize(node.getID(), calculateStrength(newList.get(j).getLevel(),100)*3);
-                    node.addToHistory(calculateStrength(newList.get(j).getLevel(),100));
-                    break;
-                }
-            }
-            if(!keep) {
+
+            if (newSignals.containsKey(node.getID())) {
+                forceDirectedGraph.changeSize(node.getID(), newSignals.get(node.getID()).getStrength()*3);
+                node.addToHistory(newSignals.get(node.getID()).getStrength());
+            } else {
                 idsToRemove.add(node.getID());
             }
         }
@@ -98,19 +106,22 @@ public class Invoker extends PApplet{
             removeNode(id);
         }
 
-        for(int k = 0; k < newList.size(); k++){
-            boolean add = true;
-            for(int i = 0; i < forceDirectedGraph.nodes.size(); i++){
-                if(newList.get(k).getId().equals(forceDirectedGraph.nodes.get(i).getID())) {
-                    add = false;
+        for(Signal signal: newSignals.values()){
+            boolean contains = false;
+            for (Node node : forceDirectedGraph.nodes) {
+                if (signal.getId().equals(node.getID())) {
+                    contains = true;
                     break;
                 }
+
             }
-            if(add) {
-                addNode(newList.get(k).getName(),newList.get(k).getId(),newList.get(k).getStrength()/10,
-                        newList.get(k).getFreq(),newList.get(k).getVenue(),newList.get(k).getLevel(),new ArrayList<Integer>());
+            if (!contains) {
+                Log.i("plop", "doesn't contain");
+                addNode(signal.getName(),signal.getId(),signal.getStrength()/10,
+                        signal.getFreq(),signal.getVenue(),signal.getLevel(),signal.getHistory());
             }
         }
+
     }
 
     public int calculateStrength(int input, int numLevel){
