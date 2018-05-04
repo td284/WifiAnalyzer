@@ -97,7 +97,7 @@ public class Invoker extends PApplet{
 
             if (newSignals.containsKey(node.getID())) {
                 forceDirectedGraph.changeSize(node.getID(), newSignals.get(node.getID()).getStrength()*3);
-                node.addToHistory(newSignals.get(node.getID()).getStrength());
+                node.addToHistory(newSignals.get(node.getID()).getLevel());
             } else {
                 idsToRemove.add(node.getID());
             }

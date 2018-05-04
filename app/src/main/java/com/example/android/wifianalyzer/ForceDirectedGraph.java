@@ -13,9 +13,9 @@ import java.util.List;
 public class ForceDirectedGraph extends Viewport{
 
   private static final float TOTAL_KINETIC_ENERGY_DEFAULT = MAX_FLOAT;
-  public static final float SPRING_CONSTANT_DEFAULT       = 0.1f;
-  public static final float COULOMB_CONSTANT_DEFAULT      = 500.0f;
-  public static final float DAMPING_COEFFICIENT_DEFAULT   = 0.2f;
+  public static final float SPRING_CONSTANT_DEFAULT       = 0.2f;
+  public static final float COULOMB_CONSTANT_DEFAULT      = 10000.0f;
+  public static final float DAMPING_COEFFICIENT_DEFAULT   = 0.3f;
   public static final float TIME_STEP_DEFAULT             = 1.0f;
 
   public ArrayList<Node> nodes;
@@ -91,7 +91,7 @@ public class ForceDirectedGraph extends Viewport{
 
   public void addNode(String name, String id, float mass, int frequency, String venue, int level, ArrayList<Integer> hist){
     Node newNode = new Node(name, id,mass,frequency,venue, canvas, level, hist);
-    newNode.getHist().add((int)mass*10);
+    newNode.getHist().add(level);
     float nodeSizeRatio;
     if(this.getWidth() < this.getHeight())
       nodeSizeRatio = this.getWidth() / (mass * 5.0f); //ad-hoc

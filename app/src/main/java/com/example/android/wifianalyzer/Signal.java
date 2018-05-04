@@ -26,7 +26,7 @@ public class Signal implements Comparable {
         this.venue = wifi.venueName.toString();
         this.type = "wifi";
         history = new ArrayList<>();
-        history.add(this.strength);
+        history.add(this.level);
     }
 
     Signal(BluetoothDevice bluetooth, int rssi) {
@@ -37,7 +37,7 @@ public class Signal implements Comparable {
         this.type = "bluetooth";
         this.freq = 2400;
         history = new ArrayList<>();
-        history.add(this.strength);
+        history.add(this.level);
 
     }
 
@@ -55,7 +55,7 @@ public class Signal implements Comparable {
     public void update(int level) {
         this.level = level;
         strength = WifiManager.calculateSignalLevel(level, 100);
-        history.add(strength);
+        history.add(level);
         if (history.size() > 20) {
             history.remove(0);
         }

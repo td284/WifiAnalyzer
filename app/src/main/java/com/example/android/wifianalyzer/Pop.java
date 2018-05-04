@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -64,19 +65,20 @@ public class Pop extends Activity {
 
         TextView tv = (TextView)findViewById(R.id.textView);
         tv.setTextSize(16);
-        tv.setText(name+"\t\t"+venue+"\n"+"Strength: "+level+" dBm"+"\t BSSID: " +id+"\nFrequency: "+freq);
+        tv.setText(name+"\t\t"+venue+"\n"+"Strength: "+level+" dBm"+"\t\tFrequency: "+freq+"\n BSSID: " +id);
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
-        DataPoint[] datas = new DataPoint[hist.size()];
+        DataPoint[] datas = new DataPoint[hist.size()+1];
+        datas[0] = new DataPoint(0,hist.get(0));
         for(int i = 0; i < hist.size(); i++){
-            datas[i] = new DataPoint(i,hist.get(i));
+            datas[i+1] = new DataPoint(i+1,hist.get(i));
         }
 
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(datas);
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
-                String txt = "x Label: "+(int)dataPoint.getX() +" Strength: " + (int)dataPoint.getY();
+                String txt = "Time: "+(int)dataPoint.getX() +" Strength: " + (int)dataPoint.getY();
                 Toast.makeText(getWindow().getContext(), txt, Toast.LENGTH_SHORT).show();
 
             }
@@ -87,11 +89,21 @@ public class Pop extends Activity {
             series.appendData(new DataPoint(i,hist.get(i)),false,20);
         }*/
         graph.addSeries(series);
-        graph.setScaleX(0.9f);
-        graph.setScaleY(0.9f);
-        graph.setTitle("Strength vs. Time");
+        graph.setScaleX(0.88f);
+        graph.setScaleY(0.88f);
+        graph.setTitle("Signal Strength over Time");
+        graph.getGridLabelRenderer().setVerticalAxisTitle("dBm");
+        graph.getGridLabelRenderer().setVerticalAxisTitleTextSize(20);
+        graph.getGridLabelRenderer().setHorizontalAxisTitle("Time");
+        graph.getGridLabelRenderer().setHorizontalAxisTitleTextSize(20);
 
-
+        String[] xlabels = new String[datas.length];
+        for(int i = 0; i < xlabels.length; i++){
+            xlabels[i] = Integer.toString(i);
+        }
+        //StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+        //staticLabelsFormatter.setHorizontalLabels(xlabels);
+        graph.getGridLabelRenderer().setNumHorizontalLabels(1+datas.length/2);
 
 
 
