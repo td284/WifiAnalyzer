@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 wifiSignals = updateWifi();
                 bluetoothSignals = updateBluetooth();
                 strongestSignals = joinSignals();
-                Log.i("pac", "===================");
+                //Log.i("pac", "===================");
                 invoker.updateList(strongestSignals);
 
                 handler.postDelayed(this, 1000);
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<Signal> shortened = joinedSignals.subList(0,Math.min(5,joinedSignals.size()));
 
-        Log.i("pac", "size: " + joinedSignals.size());
+        //Log.i("pac", "size: " + joinedSignals.size());
 
         HashMap<String, Signal> strongest = new HashMap<>();
 
@@ -273,18 +273,18 @@ public class MainActivity extends AppCompatActivity {
         starts search again
      */
     public void wifiReceived() {
-        Log.i(wifiTag, "\n ========wifi search complete========== \n");
+        //Log.i(wifiTag, "\n ========wifi search complete========== \n");
 
         HashMap<String, Signal> tempWifiSignals = new HashMap<>();
         List<ScanResult> wifiScanResults = mainWifi.getScanResults();
         for (ScanResult wifi: wifiScanResults) {
             Signal wifiSignal = new Signal(wifi);
             tempWifiSignals.put(wifi.BSSID, wifiSignal);
-            Log.i(wifiTag,wifi.SSID + " - " + wifi.BSSID + " - " + wifi.level);
+            //Log.i(wifiTag,wifi.SSID + " - " + wifi.BSSID + " - " + wifi.level);
 
         }
         newWifiSignals = tempWifiSignals;
-        Log.i(wifiTag, "Starting another search again");
+        //Log.i(wifiTag, "Starting another search again");
 
         mainWifi.startScan();
     }
@@ -301,12 +301,12 @@ public class MainActivity extends AppCompatActivity {
         Signal bluetoothSignal = new Signal(device, rssi);
         tempBluetoothSignals.put(device.getAddress(), bluetoothSignal);
 
-        Log.i(bluetoothTag,"name: " + device.getName() +
+        /*Log.i(bluetoothTag,"name: " + device.getName() +
                 ", address: " + device.getAddress() +
                 "type: " + device.getType() +
                 "bond state: " + device.getBondState()
 
-        );
+        );*/
 
         /*ParcelUuid[] a = device.getUuids();
         for (int i = 0;i<a.length;i++) {
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         starts another search
      */
     public void finishBluetoothSearch() {
-        Log.i(bluetoothTag, "\n=====bluetooth search complete, starting again=======\n");
+        //Log.i(bluetoothTag, "\n=====bluetooth search complete, starting again=======\n");
         newBluetoothSignals = tempBluetoothSignals;
         tempBluetoothSignals = new HashMap<>();
         mainBluetooth.startDiscovery();

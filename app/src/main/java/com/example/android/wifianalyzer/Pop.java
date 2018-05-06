@@ -65,7 +65,7 @@ public class Pop extends Activity {
 
         TextView tv = (TextView)findViewById(R.id.textView);
         tv.setTextSize(16);
-        tv.setText(name+"\t\t"+venue+"\n"+"Strength: "+level+" dBm"+"\t\tFrequency: "+freq+"\n BSSID: " +id);
+        tv.setText(name+"\t\t"+venue+"\n"+"Strength: "+level+" dBm"+"\t\tFrequency: "+freq+"\nBSSID: " +id);
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
         DataPoint[] datas = new DataPoint[hist.size()+1];
@@ -93,9 +93,9 @@ public class Pop extends Activity {
         graph.setScaleY(0.88f);
         graph.setTitle("Signal Strength over Time");
         graph.getGridLabelRenderer().setVerticalAxisTitle("dBm");
-        graph.getGridLabelRenderer().setVerticalAxisTitleTextSize(20);
+        graph.getGridLabelRenderer().setVerticalAxisTitleTextSize(22);
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Time");
-        graph.getGridLabelRenderer().setHorizontalAxisTitleTextSize(20);
+        graph.getGridLabelRenderer().setHorizontalAxisTitleTextSize(22);
 
         String[] xlabels = new String[datas.length];
         for(int i = 0; i < xlabels.length; i++){

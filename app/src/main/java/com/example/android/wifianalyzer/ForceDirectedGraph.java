@@ -8,13 +8,15 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ForceDirectedGraph extends Viewport{
 
   private static final float TOTAL_KINETIC_ENERGY_DEFAULT = MAX_FLOAT;
-  public static final float SPRING_CONSTANT_DEFAULT       = 0.2f;
-  public static final float COULOMB_CONSTANT_DEFAULT      = 10000.0f;
+  public static final float SPRING_CONSTANT_DEFAULT       = 0.1f;
+  public static final float COULOMB_CONSTANT_DEFAULT      = 7500.0f;
   public static final float DAMPING_COEFFICIENT_DEFAULT   = 0.3f;
   public static final float TIME_STEP_DEFAULT             = 1.0f;
 
@@ -27,6 +29,7 @@ public class ForceDirectedGraph extends Viewport{
   private Invoker canvas;
   public Context context;
   private Node lockedNode;
+  private List<int[]> colors;
 
   public ForceDirectedGraph(Invoker canvas, Context context){
     super();
@@ -39,6 +42,13 @@ public class ForceDirectedGraph extends Viewport{
     this.canvas = canvas;
     this.context = context;
     this.lockedNode = null;
+
+    this.colors = new ArrayList<>();
+    colors.add(new int[]{40,133,171});
+    colors.add(new int[]{245,249,49});
+    colors.add(new int[]{245,64,45});
+    colors.add(new int[]{246,246,170});
+    colors.add(new int[]{86,85,84});
   }
 
   public void add(Node node){
@@ -90,7 +100,7 @@ public class ForceDirectedGraph extends Viewport{
   }
 
   public void addNode(String name, String id, float mass, int frequency, String venue, int level, ArrayList<Integer> hist){
-    Node newNode = new Node(name, id,mass,frequency,venue, canvas, level, hist);
+    Node newNode = new Node(name, id,mass,frequency,venue, canvas, level, hist,colors.remove(0));
     newNode.getHist().add(level);
     float nodeSizeRatio;
     if(this.getWidth() < this.getHeight())
@@ -106,16 +116,34 @@ public class ForceDirectedGraph extends Viewport{
     float y = random(minYBound, maxYBound);
     float d = newNode.getMass() * nodeSizeRatio;
     newNode.set(x, y, mass*30);
+
+    for(int i = 0; i < nodes.size(); i++){
+      if(nodes.get(i).getName().equals(newNode.getName())){
+        newNode.addAdjacent(nodes.get(i));
+        nodes.get(i).addAdjacent(newNode);
+      }
+    }
+
     nodes.add(newNode);
   }
 
   public void removeNode(String id){
       for(int i = 0; i < nodes.size(); i++){
           if(nodes.get(i).getID().equals(id)){
+              this.colors.add(nodes.get(i).getColor());
               nodes.remove(i);
               break;
           }
       }
+    for(int i = 0; i < nodes.size(); i++){
+      for(int j = 0; j < nodes.get(i).getSizeOfAdjacents(); j++){
+        if(nodes.get(i).getAdjacentAt(j).getID().equals(id)){
+          nodes.get(i).removeAdjacent(j);
+          break;
+        }
+      }
+    }
+
   }
 
   public void changeSize(String id, int size){
@@ -131,27 +159,27 @@ public class ForceDirectedGraph extends Viewport{
     this.totalKineticEnergy = this.calculateTotalKineticEnergy();
 
     canvas.strokeWeight(1.5f);
-    //this.drawEdges();
+    this.drawEdges();
     for(int i = 0; i < this.nodes.size(); i++)
       this.nodes.get(i).draw(50+i*50);
 
     canvas.fill(0);
     canvas.textAlign(LEFT, TOP);
     float offset = canvas.textAscent() + canvas.textDescent();
-    canvas.text("Total Kinetic Energy: " + this.totalKineticEnergy, this.getX(), this.getY());
-    /*canvas.text("Spring Constant: " + this.springConstant, this.getX(), this.getY() + offset);
+    /*canvas.text("Total Kinetic Energy: " + this.totalKineticEnergy, this.getX(), this.getY());
+    canvas.text("Spring Constant: " + this.springConstant, this.getX(), this.getY() + offset);
     canvas.text("Coulomb Constant: " + this.coulombConstant, this.getX(), this.getY() + offset * 2.0f);
     canvas.text("Damping Coefficient: " + this.dampingCoefficient, this.getX(), this.getY() + offset * 3.0f);
     canvas.text("Time Step: " + this.timeStep, this.getX(), this.getY() + offset * 4.0f);*/
   }
 
   private void drawEdges(){
-    stroke(51, 51, 255);
+    canvas.stroke(51, 51, 255);
     for(int i = 0; i < this.nodes.size(); i++){
       Node node1 = this.nodes.get(i);
       for(int j = 0; j < node1.getSizeOfAdjacents(); j++){
         Node node2 = node1.getAdjacentAt(j);
-        line(node1.getX(), node1.getY(), node2.getX(), node2.getY());
+        canvas.line(node1.getX(), node1.getY(), node2.getX(), node2.getY());
       }
     }
   }
@@ -183,7 +211,7 @@ public class ForceDirectedGraph extends Viewport{
 
       for(int j = 0; j < target.getSizeOfAdjacents(); j++){ //Hooke's law
         Node node = target.getAdjacentAt(j);
-        float springLength = target.getNaturalSpringLengthAt(j);
+        float springLength = node.getDiameter();//target.getNaturalSpringLengthAt(j);
         float dx = target.getX() - node.getX();
         float dy = target.getY() - node.getY();
         float distance = sqrt(dx * dx + dy * dy);

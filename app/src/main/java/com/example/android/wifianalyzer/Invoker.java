@@ -78,19 +78,6 @@ public class Invoker extends PApplet{
     }
 
     public void updateList(HashMap<String, Signal> newSignals){
-
-        Log.i("plop", "size: " +forceDirectedGraph.nodes.size());
-
-        Log.i("plop", "====================");
-        for(Node node: forceDirectedGraph.nodes){
-            Log.i("plop", node.getID());
-        }
-
-        Log.i("plop", "====================");
-        for(Signal signal: newSignals.values()){
-            Log.i("plop", signal.getId());
-        }
-
         List<String> idsToRemove = new ArrayList<>();
 
         for(Node node: forceDirectedGraph.nodes){
@@ -116,7 +103,6 @@ public class Invoker extends PApplet{
 
             }
             if (!contains) {
-                Log.i("plop", "doesn't contain");
                 addNode(signal.getName(),signal.getId(),signal.getStrength()/10,
                         signal.getFreq(),signal.getVenue(),signal.getLevel(),signal.getHistory());
             }

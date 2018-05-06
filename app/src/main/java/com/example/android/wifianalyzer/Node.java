@@ -26,8 +26,9 @@ public class Node extends PApplet{
   private float forceY;
   private boolean isHighlighted;
   private Invoker canvas;
+  private int[] color;
 
-  public Node(String name, String id, float mass, int frequency, String venue, Invoker canvas, int level, ArrayList<Integer> hist){
+  public Node(String name, String id, float mass, int frequency, String venue, Invoker canvas, int level, ArrayList<Integer> hist, int[] color){
     this.name = name;
     this.id = id;
     this.mass = mass;
@@ -35,6 +36,7 @@ public class Node extends PApplet{
     this.venue = venue;
     this.level = level;
     this.hist = hist;
+    this.color = color;
 
     this.adjacents = new ArrayList<Node>();
     this.naturalSpringLengths = new ArrayList<Float>();
@@ -57,6 +59,10 @@ public class Node extends PApplet{
   public void set(float x, float y, float diameter){
     this.set(x, y);
     this.diameter = diameter;
+  }
+
+  public int[] getColor(){
+    return color;
   }
 
   public void setDiameter(int d) {
@@ -116,9 +122,17 @@ public class Node extends PApplet{
 
   public void addToHistory(int data){
     hist.add(data);
-    if(hist.size()>20){
+    while(hist.size()>20){
       hist.remove(0);
     }
+  }
+
+  public void addAdjacent(Node node){
+    adjacents.add(node);
+  }
+
+  public void removeAdjacent(int index){
+    adjacents.remove(index);
   }
 
   public void draw(int color){
@@ -131,12 +145,12 @@ public class Node extends PApplet{
       canvas.fill(255, 178, 102);
     }else{
       canvas.stroke(51, 51, 255);
-      canvas.fill(255*this.frequency/5000, 255*this.frequency/6000, (int)255*this.frequency/7000);
+      canvas.fill(this.color[0], this.color[1], this.color[2]);
     }
     canvas.ellipse(this.x, this.y, this.diameter, this.diameter);
     if(!this.isHighlighted){ //tooltip
       canvas.fill(0);
-      canvas.textSize(26);
+      canvas.textSize(28);
       canvas.textAlign(CENTER, BOTTOM);
       canvas.text(this.name, this.x, this.y);
       canvas.textAlign(CENTER, TOP);
