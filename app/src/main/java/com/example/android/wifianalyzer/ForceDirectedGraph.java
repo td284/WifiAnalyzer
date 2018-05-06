@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ForceDirectedGraph extends Viewport{
+public class ForceDirectedGraph extends Viewport {
 
   private static final float TOTAL_KINETIC_ENERGY_DEFAULT = MAX_FLOAT;
   public static final float SPRING_CONSTANT_DEFAULT       = 0.2f;
@@ -25,10 +25,10 @@ public class ForceDirectedGraph extends Viewport{
   private float dampingCoefficient;
   private float timeStep;
   private Invoker canvas;
-  public Context context;
+  public MainActivity context;
   private Node lockedNode;
 
-  public ForceDirectedGraph(Invoker canvas, Context context){
+  public ForceDirectedGraph(Invoker canvas, MainActivity context){
     super();
     this.nodes = new ArrayList<Node>();
     this.totalKineticEnergy = TOTAL_KINETIC_ENERGY_DEFAULT;
@@ -250,10 +250,13 @@ public class ForceDirectedGraph extends Viewport{
   }
 
   public void onMousePressedAt(int x, int y){
+    boolean intersect = false;
     for(int i = 0; i < this.nodes.size(); i++){
       Node node = this.nodes.get(i);
       if(node.isIntersectingWith(x, y)){
-        Intent newIntent = new Intent(context,Pop.class);
+        context.setSummary(node);
+        intersect = true;
+/*        Intent newIntent = new Intent(context,Pop.class);
 
         newIntent.putExtra("name",node.getName());
         newIntent.putExtra("id",node.getID());
@@ -263,12 +266,16 @@ public class ForceDirectedGraph extends Viewport{
         newIntent.putExtra("strength",node.getLevel());
         newIntent.putIntegerArrayListExtra("hist",node.getHist());
 
-        context.startActivity(newIntent);
+        context.startActivity(newIntent);*/
 
         this.lockedNode = node;
         this.lockedNode.setVelocities(0.0f, 0.0f);
         break;
       }
+    }
+    if (!intersect) {
+      context.setBase();
+
     }
   }
   public void onMouseDraggedTo(int x, int y){
