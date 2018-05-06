@@ -22,7 +22,7 @@ public class Signal implements Comparable {
         this.level = wifi.level;
         this.strength = WifiManager.calculateSignalLevel(wifi.level, 100);
         this.freq = wifi.frequency;
-        this.name = wifi.SSID;
+        this.name = wifi.SSID==null?"NA WiFi":wifi.SSID;
         this.venue = wifi.venueName.toString();
         this.type = "wifi";
         history = new ArrayList<>();
@@ -33,7 +33,7 @@ public class Signal implements Comparable {
         this.id = bluetooth.getAddress();
         this.level = rssi;
         this.strength = WifiManager.calculateSignalLevel(rssi, 100);
-        this.name = bluetooth.getName();
+        this.name = bluetooth.getName()==null?"Bluetooth":bluetooth.getName();
         this.type = "bluetooth";
         this.freq = 2400;
         history = new ArrayList<>();

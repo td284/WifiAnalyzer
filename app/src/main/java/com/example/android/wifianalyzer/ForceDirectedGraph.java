@@ -160,8 +160,10 @@ public class ForceDirectedGraph extends Viewport{
 
     canvas.strokeWeight(1.5f);
     this.drawEdges();
-    for(int i = 0; i < this.nodes.size(); i++)
-      this.nodes.get(i).draw(50+i*50);
+    for(int i = 0; i < this.nodes.size(); i++) {
+      this.nodes.get(i).draw(50 + i * 50);
+    }
+
 
     canvas.fill(0);
     canvas.textAlign(LEFT, TOP);

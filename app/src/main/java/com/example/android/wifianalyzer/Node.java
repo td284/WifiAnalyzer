@@ -145,13 +145,15 @@ public class Node extends PApplet{
       canvas.fill(255, 178, 102);
     }else{
       canvas.stroke(51, 51, 255);
-      canvas.fill(this.color[0], this.color[1], this.color[2]);
+      canvas.fill(this.color[0], this.color[1], this.color[2],191);
+
     }
     canvas.ellipse(this.x, this.y, this.diameter, this.diameter);
     if(!this.isHighlighted){ //tooltip
       canvas.fill(0);
       canvas.textSize(28);
       canvas.textAlign(CENTER, BOTTOM);
+
       canvas.text(this.name, this.x, this.y);
       canvas.textAlign(CENTER, TOP);
       canvas.text("freq: " + this.frequency, this.x, this.y);
