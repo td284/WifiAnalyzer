@@ -23,12 +23,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelUuid;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -66,10 +63,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String locationTag = "location";
     private static final String lifecyleTag = "lifecycle";
 
-    private BottomSheetBehavior mBottomSheetBehavior;
-    private FragmentManager fm;
-    private Base base;
-    private SignalSummary signal_summary;
 
     private static final int PERMISSION_ALL = 1;
     private static final String[] PERMISSIONS = new String[]{
@@ -92,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
     private SignalReceiver signalReceiver;
     public Invoker invoker;
 
-    private Node curNode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,41 +97,6 @@ public class MainActivity extends AppCompatActivity {
         wifiSignals = new HashMap<>();
         bluetoothSignals = new HashMap<>();
         tempBluetoothSignals = new HashMap<>();
-
-        View bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        fm = getSupportFragmentManager();
-        base = (Base) getSupportFragmentManager().findFragmentById(R.id.base_fragment);
-        signal_summary = (SignalSummary) getSupportFragmentManager().findFragmentById(R.id.signal_summary_fragment);
-
-        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-                        fm.beginTransaction()
-                                .show(base)
-                                .hide(signal_summary)
-                                .commit();
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-                        fm.beginTransaction()
-                                .hide(base)
-                                .show(signal_summary)
-                                .commit();
-                        break;
-                    default:
-                        Log.i("plop", Integer.toString(newState));
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
         if(!hasPermissions(this, PERMISSIONS)){
             requestLocationPermission();
         } else {
@@ -152,8 +109,13 @@ public class MainActivity extends AppCompatActivity {
     public void start() {
         setSignalReceiver();
         startSignalSearch();
-        FrameLayout frame = findViewById(R.id.container);
-        invoker = new Invoker(this);
+        FrameLayout frame = new FrameLayout(this);
+        frame.setId(CompatUtils.getUniqueViewId());
+        setContentView(frame, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        invoker = new Invoker(MainActivity.this);
+
         PFragment fragment = new PFragment(invoker);
         fragment.setView(frame, this);
 
@@ -267,39 +229,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public void setSummary(Node node) {
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        curNode = node;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //Node node = new Node("Asdf", "asdf",1234,1234, "asdf", invoker, 123, new ArrayList<Integer>());
-                signal_summary.setInfo(curNode);
-            }
-        });
-        fm.beginTransaction()
-                .hide(base)
-                .show(signal_summary)
-                .commit();
-    }
-
-    public void setBase() {
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        fm.beginTransaction()
-                .show(base)
-                .hide(signal_summary)
-                .commit();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
 
         if (requestCode == PERMISSION_ALL) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-                start();
             } else {
                 Log.i(permissionTag, "here");
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();

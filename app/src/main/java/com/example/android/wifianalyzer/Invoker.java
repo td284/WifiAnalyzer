@@ -18,13 +18,14 @@ import java.util.Map;
 import processing.core.PApplet;
 
 
-public class Invoker extends PApplet {
+public class Invoker extends PApplet{
     final int CANVAS_WIDTH_DEFAULT  = 700;
-    final int CANVAS_HEIGHT_DEFAULT = 600;
-    private ForceDirectedGraph forceDirectedGraph;
-    private MainActivity context;
+    final int CANVAS_HEIGHT_DEFAULT = 1000;
+    Handler handler = new Handler();
+    public ForceDirectedGraph forceDirectedGraph;
+    public Context context;
 
-    public Invoker(MainActivity context){
+    public Invoker(Context context){
         this.context = context;
     }
 
@@ -44,7 +45,6 @@ public class Invoker extends PApplet {
         background(255);
         forceDirectedGraph.draw();
         strokeWeight(1.5f);
-
     }
 
     public void mouseMoved(){
@@ -65,7 +65,7 @@ public class Invoker extends PApplet {
     }
 
     public ForceDirectedGraph createForceDirectedGraphFrom(){
-        forceDirectedGraph = new ForceDirectedGraph(this,context);
+        ForceDirectedGraph forceDirectedGraph = new ForceDirectedGraph(this,context);
         return forceDirectedGraph;
     }
 
@@ -79,7 +79,17 @@ public class Invoker extends PApplet {
 
     public void updateList(HashMap<String, Signal> newSignals){
 
-        Log.i("plooop", "at new signals");
+        Log.i("plop", "size: " +forceDirectedGraph.nodes.size());
+
+        Log.i("plop", "====================");
+        for(Node node: forceDirectedGraph.nodes){
+            Log.i("plop", node.getID());
+        }
+
+        Log.i("plop", "====================");
+        for(Signal signal: newSignals.values()){
+            Log.i("plop", signal.getId());
+        }
 
         List<String> idsToRemove = new ArrayList<>();
 
@@ -95,6 +105,7 @@ public class Invoker extends PApplet {
         for(String id: idsToRemove){
             removeNode(id);
         }
+
         for(Signal signal: newSignals.values()){
             boolean contains = false;
             for (Node node : forceDirectedGraph.nodes) {
@@ -105,6 +116,7 @@ public class Invoker extends PApplet {
 
             }
             if (!contains) {
+                Log.i("plop", "doesn't contain");
                 addNode(signal.getName(),signal.getId(),signal.getStrength()/10,
                         signal.getFreq(),signal.getVenue(),signal.getLevel(),signal.getHistory());
             }
@@ -112,4 +124,15 @@ public class Invoker extends PApplet {
 
     }
 
+    public int calculateStrength(int input, int numLevel){
+        int MAX_RSSI = -30;
+        int MIN_RSSI = -80;
+        if(input<MIN_RSSI){
+            return 0;
+        } else if(input > MAX_RSSI){
+            return 99;
+        }else{
+            return (input-MIN_RSSI)*(numLevel - 1)/(MAX_RSSI - MIN_RSSI);
+        }
+    }
 }
