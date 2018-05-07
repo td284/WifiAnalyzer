@@ -27,11 +27,11 @@ public class ForceDirectedGraph extends Viewport{
   private float dampingCoefficient;
   private float timeStep;
   private Invoker canvas;
-  public Context context;
+  public MainActivity context;
   private Node lockedNode;
   private List<int[]> colors;
 
-  public ForceDirectedGraph(Invoker canvas, Context context){
+  public ForceDirectedGraph(Invoker canvas, MainActivity context){
     super();
     this.nodes = new ArrayList<Node>();
     this.totalKineticEnergy = TOTAL_KINETIC_ENERGY_DEFAULT;
@@ -47,8 +47,8 @@ public class ForceDirectedGraph extends Viewport{
     colors.add(new int[]{40,133,171});
     colors.add(new int[]{245,249,49});
     colors.add(new int[]{245,64,45});
-    colors.add(new int[]{246,246,170});
-    colors.add(new int[]{86,85,84});
+    colors.add(new int[]{66,186,150});
+    colors.add(new int[]{226,26,199});
   }
 
   public void add(Node node){
@@ -280,10 +280,12 @@ public class ForceDirectedGraph extends Viewport{
   }
 
   public void onMousePressedAt(int x, int y){
+    System.out.println("---------------------------------");
     for(int i = 0; i < this.nodes.size(); i++){
       Node node = this.nodes.get(i);
       if(node.isIntersectingWith(x, y)){
-        Intent newIntent = new Intent(context,Pop.class);
+        Log.i("plooop", "$$$$$$$$$$$$$$$$$$$");
+        /*Intent newIntent = new Intent(context,Pop.class);
 
         newIntent.putExtra("name",node.getName());
         newIntent.putExtra("id",node.getID());
@@ -291,18 +293,21 @@ public class ForceDirectedGraph extends Viewport{
         newIntent.putExtra("frequency",node.getFrequency());
         newIntent.putExtra("venue",node.getVenue());
         newIntent.putExtra("strength",node.getLevel());
-        newIntent.putIntegerArrayListExtra("hist",node.getHist());
+        newIntent.putIntegerArrayListExtra("hist",node.getHist());*/
 
-        context.startActivity(newIntent);
+        //context.startActivity(newIntent);
 
-        this.lockedNode = node;
-        this.lockedNode.setVelocities(0.0f, 0.0f);
-        break;
+        //this.lockedNode = node;
+        //this.lockedNode.setVelocities(0.0f, 0.0f);
+
+        context.setSummary(node);
+        return;
       }
     }
+    context.switchToBase();
   }
   public void onMouseDraggedTo(int x, int y){
-    if(this.lockedNode != null){
+    /*if(this.lockedNode != null){
       float radius = this.lockedNode.getDiameter() / 2.0f; //for boundary check
       if(x < this.getX() + radius)
         x = (int)(this.getX() + radius);
@@ -315,7 +320,7 @@ public class ForceDirectedGraph extends Viewport{
 
       this.lockedNode.set(x, y);
       this.lockedNode.setVelocities(0.0f, 0.0f);
-    }
+    }*/
   }
   public void onMouseReleased(){
     this.lockedNode = null;

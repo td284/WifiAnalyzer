@@ -9,8 +9,10 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +21,12 @@ import processing.core.PApplet;
 
 
 public class Invoker extends PApplet{
-    final int CANVAS_WIDTH_DEFAULT  = 700;
-    final int CANVAS_HEIGHT_DEFAULT = 1000;
-    Handler handler = new Handler();
+    private int CANVAS_WIDTH_DEFAULT= 700;
+    private int CANVAS_HEIGHT_DEFAULT= 700;//1000;
     public ForceDirectedGraph forceDirectedGraph;
-    public Context context;
+    public MainActivity context;
 
-    public Invoker(Context context){
+    public Invoker(MainActivity context){
         this.context = context;
     }
 
@@ -43,6 +44,7 @@ public class Invoker extends PApplet{
 
     public void draw(){
         background(255);
+        background(69,26,107);
         forceDirectedGraph.draw();
         strokeWeight(1.5f);
     }
@@ -79,34 +81,37 @@ public class Invoker extends PApplet{
 
     public void updateList(HashMap<String, Signal> newSignals){
         List<String> idsToRemove = new ArrayList<>();
+        if (forceDirectedGraph != null) {
+            for(Node node: forceDirectedGraph.nodes){
 
-        for(Node node: forceDirectedGraph.nodes){
-
-            if (newSignals.containsKey(node.getID())) {
-                forceDirectedGraph.changeSize(node.getID(), newSignals.get(node.getID()).getStrength()*3);
-                node.addToHistory(newSignals.get(node.getID()).getLevel());
-            } else {
-                idsToRemove.add(node.getID());
-            }
-        }
-        for(String id: idsToRemove){
-            removeNode(id);
-        }
-
-        for(Signal signal: newSignals.values()){
-            boolean contains = false;
-            for (Node node : forceDirectedGraph.nodes) {
-                if (signal.getId().equals(node.getID())) {
-                    contains = true;
-                    break;
+                if (newSignals.containsKey(node.getID())) {
+                    forceDirectedGraph.changeSize(node.getID(), newSignals.get(node.getID()).getStrength()*3);
+                    node.addToHistory(newSignals.get(node.getID()).getLevel());
+                } else {
+                    idsToRemove.add(node.getID());
                 }
+            }
+            for(String id: idsToRemove){
+                removeNode(id);
+            }
 
+            for(Signal signal: newSignals.values()){
+                boolean contains = false;
+                for (Node node : forceDirectedGraph.nodes) {
+                    if (signal.getId().equals(node.getID())) {
+                        contains = true;
+                        break;
+                    }
+
+                }
+                if (!contains) {
+                    addNode(signal.getName(),signal.getId(),signal.getStrength()/10,
+                            signal.getFreq(),signal.getVenue(),signal.getLevel(),signal.getHistory());
+                }
             }
-            if (!contains) {
-                addNode(signal.getName(),signal.getId(),signal.getStrength()/10,
-                        signal.getFreq(),signal.getVenue(),signal.getLevel(),signal.getHistory());
-            }
+            context.setBase(forceDirectedGraph.nodes);
         }
+
 
     }
 
