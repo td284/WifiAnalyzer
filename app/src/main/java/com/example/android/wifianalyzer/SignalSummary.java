@@ -91,28 +91,26 @@ public class SignalSummary extends Fragment {
 
 
         series.resetData(data);
-/*        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 String txt = "Time: "+(int)dataPoint.getX() +" Strength: " + (int)dataPoint.getY();
-                Toast.makeText(getWindow().getContext(), txt, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getView().getContext(), txt, Toast.LENGTH_SHORT).show();
 
             }
-        });*/
+        });
 
         //Log.i("data",Integer.toString(history.size()));
         /*for(int i = 0; i < hist.size(); i++){
             series.appendData(new DataPoint(i,hist.get(i)),false,20);
         }*/
 
-
-        String[] xlabels = new String[data.length];
-        for(int i = 0; i < xlabels.length; i++){
-            xlabels[i] = Integer.toString(i);
-        }
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-        staticLabelsFormatter.setHorizontalLabels(xlabels);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(-70);
+        graph.getViewport().setMaxY(-20);
+        graph.getGridLabelRenderer().setNumVerticalLabels(6);
         graph.getGridLabelRenderer().setNumHorizontalLabels(1+data.length/2);
+        //graph.getGridLabelRenderer().set
 
 
 

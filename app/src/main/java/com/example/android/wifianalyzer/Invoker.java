@@ -9,6 +9,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ import processing.core.PApplet;
 
 
 public class Invoker extends PApplet{
-    private int CANVAS_WIDTH_DEFAULT= 700;
-    private int CANVAS_HEIGHT_DEFAULT= 700;//1000;
+    private int CANVAS_WIDTH_DEFAULT= 720;
+    private int CANVAS_HEIGHT_DEFAULT= 1200;//1000;
     public ForceDirectedGraph forceDirectedGraph;
     public MainActivity context;
 
@@ -31,14 +32,15 @@ public class Invoker extends PApplet{
     }
 
     public void settings() {
-        size(CANVAS_WIDTH_DEFAULT, CANVAS_HEIGHT_DEFAULT);
+        //fullScreen();
+        this.size(CANVAS_WIDTH_DEFAULT, CANVAS_HEIGHT_DEFAULT);
     }
 
     public void setup(){
         int canvasWidth = CANVAS_WIDTH_DEFAULT;
         int canvasHeight = CANVAS_HEIGHT_DEFAULT;
         forceDirectedGraph = createForceDirectedGraphFrom();
-        forceDirectedGraph.set(0.0f, 0.0f, (float)canvasWidth, (float)canvasHeight);
+        forceDirectedGraph.set(0.0f, 0.0f, (float)canvasWidth, (float)canvasHeight-330);
         forceDirectedGraph.initializeNodeLocations();
     }
 

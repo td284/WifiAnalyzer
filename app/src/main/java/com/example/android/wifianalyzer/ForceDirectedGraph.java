@@ -284,18 +284,6 @@ public class ForceDirectedGraph extends Viewport{
     for(int i = 0; i < this.nodes.size(); i++){
       Node node = this.nodes.get(i);
       if(node.isIntersectingWith(x, y)){
-        Log.i("plooop", "$$$$$$$$$$$$$$$$$$$");
-        /*Intent newIntent = new Intent(context,Pop.class);
-
-        newIntent.putExtra("name",node.getName());
-        newIntent.putExtra("id",node.getID());
-        newIntent.putExtra("mass",node.getMass());
-        newIntent.putExtra("frequency",node.getFrequency());
-        newIntent.putExtra("venue",node.getVenue());
-        newIntent.putExtra("strength",node.getLevel());
-        newIntent.putIntegerArrayListExtra("hist",node.getHist());*/
-
-        //context.startActivity(newIntent);
 
         //this.lockedNode = node;
         //this.lockedNode.setVelocities(0.0f, 0.0f);
