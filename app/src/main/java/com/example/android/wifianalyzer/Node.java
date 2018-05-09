@@ -24,7 +24,6 @@ public class Node extends PApplet{
   private float velocityY;
   private float forceX;
   private float forceY;
-  private boolean isHighlighted;
   private Invoker canvas;
   private int[] color;
 
@@ -44,7 +43,6 @@ public class Node extends PApplet{
     this.set(-1.0f, -1.0f, -1.0f); //ad-hoc
     this.setVelocities(0.0f, 0.0f);
     this.setForceToApply(0.0f, 0.0f);
-    this.isHighlighted = false;
     this.canvas = canvas;
   }
 
@@ -122,7 +120,7 @@ public class Node extends PApplet{
 
   public void addToHistory(int data){
     hist.add(data);
-    while(hist.size()>20){
+    while(hist.size()>21){
       hist.remove(0);
     }
   }
@@ -136,36 +134,23 @@ public class Node extends PApplet{
   }
 
   public void draw(int color){
-    //Log.i("test", Float.toString(this.x));
-    //Log.i("test", Float.toString(this.y));
-    //Log.i("test", Float.toString(this.diameter));
-    //Log.i("test", "================");
-    if(this.isHighlighted){
-      canvas.stroke(255, 178, 102);
-      canvas.fill(255, 178, 102);
-    }else{
-      canvas.stroke(51, 51, 255);
-      canvas.fill(this.color[0], this.color[1], this.color[2],191);
+    canvas.noStroke();
+    //canvas.stroke(51, 51, 255);
+    canvas.fill(this.color[0], this.color[1], this.color[2],191);
 
-    }
     canvas.ellipse(this.x, this.y, this.diameter, this.diameter);
-    if(!this.isHighlighted){ //tooltip
-      canvas.fill(0);
-      canvas.textSize(28);
-      canvas.textAlign(CENTER, BOTTOM);
+    canvas.fill(0);
+    canvas.textSize((int)this.diameter/7);
+    canvas.textAlign(CENTER, BOTTOM);
 
-      canvas.text(this.name, this.x, this.y);
-      canvas.textAlign(CENTER, TOP);
-      canvas.text("freq: " + this.frequency, this.x, this.y);
-    }
+    canvas.text(this.name, this.x, this.y+diameter/11);
+
+    //canvas.textAlign(CENTER, TOP);
+    //canvas.
+    //canvas.textFont();
+    //canvas.text("freq: " + this.frequency, this.x, this.y);
   }
 
-  public void highlight(){
-    this.isHighlighted = true;
-  }
-  public void dehighlight(){
-    this.isHighlighted = false;
-  }
   public boolean isIntersectingWith(int x, int y){
     float r = this.diameter / 2.0f;
     if(this.x - r <= x && x <= this.x + r && this.y - r <= y && y <= this.y + r)
@@ -185,8 +170,7 @@ public class Node extends PApplet{
            ",ADJACENTS(NATURAL_LEGTH):" + adjacentIDsAndNaturalLengths +
            ",X:" + this.x +
            ",Y:" + this.y +
-           ",DIAMETER:" + this.diameter +
-           ",HIGHLIGHTED:" + this.isHighlighted;
+           ",DIAMETER:" + this.diameter;
   }
 
 }

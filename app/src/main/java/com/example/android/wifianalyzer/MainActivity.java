@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Node curNode;
     private List<Node> curNodes;
+    GPSTracker gps;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +112,18 @@ public class MainActivity extends AppCompatActivity {
         bluetoothSignals = new HashMap<>();
         tempBluetoothSignals = new HashMap<>();
 
+
+
         View bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         fm = getSupportFragmentManager();
         base = (Base) getSupportFragmentManager().findFragmentById(R.id.base_fragment);
         signal_summary = (SignalSummary) getSupportFragmentManager().findFragmentById(R.id.signal_summary_fragment);
+        fm.beginTransaction()
+                .show(base)
+                .hide(signal_summary)
+                .commit();
+
 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -156,6 +166,10 @@ public class MainActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                gps = new GPSTracker (MainActivity.this);
+                latitude = gps.getLatitude();
+                longitude= gps.getLongitude();
+                invoker.updateLocation(latitude,longitude);
                 wifiSignals = updateWifi();
                 bluetoothSignals = updateBluetooth();
                 strongestSignals = joinSignals();
@@ -440,6 +454,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(signalReceiver);
         Log.i(lifecyleTag, "destroy");
 
     }

@@ -1,5 +1,6 @@
 package com.example.android.wifianalyzer;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,11 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 import com.jjoe64.graphview.series.Series;
 
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ public class SignalSummary extends Fragment {
     private GraphView graph;
     private View color;
     private LineGraphSeries<DataPoint> series;
+    private PointsGraphSeries<DataPoint> series2;
 
     @Nullable
     @Override
@@ -45,14 +49,17 @@ public class SignalSummary extends Fragment {
         graph = view.findViewById(R.id.summary_graph);
         color = view.findViewById(R.id.summary_color);
         series = new LineGraphSeries<DataPoint>(new DataPoint[] {});
+        series2 = new PointsGraphSeries<DataPoint>(new DataPoint[] {});
+
         graph.addSeries(series);
+        graph.addSeries(series2);
         graph.setScaleX(0.88f);
         graph.setScaleY(0.88f);
         graph.setTitle("Signal Strength over Time");
         graph.getGridLabelRenderer().setVerticalAxisTitle("dBm");
-        graph.getGridLabelRenderer().setVerticalAxisTitleTextSize(22);
+        graph.getGridLabelRenderer().setVerticalAxisTitleTextSize(24);
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Time");
-        graph.getGridLabelRenderer().setHorizontalAxisTitleTextSize(22);
+        graph.getGridLabelRenderer().setHorizontalAxisTitleTextSize(24);
         return view;
     }
 
@@ -80,18 +87,19 @@ public class SignalSummary extends Fragment {
             color.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.purple, null));
 
         }
+        //
+        int size = (history.size()-1)/5+1;
+        DataPoint[] data = new DataPoint[size];
 
 
-        DataPoint[] data = new DataPoint[history.size()+1];
-        data[0] = new DataPoint(0,history.get(0));
-        for(int i = 0; i < history.size(); i++){
-            data[i+1] = new DataPoint(i+1,history.get(i));
+        for(int i = size-1; i >=0; i--){
+            data[i] = new DataPoint((i+1-size)*5,history.get(history.size()-1-(size-1-i)*5));
         }
-
-
+        
 
         series.resetData(data);
-        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+        series2.resetData(data);
+        series2.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 String txt = "Time: "+(int)dataPoint.getX() +" Strength: " + (int)dataPoint.getY();
@@ -99,18 +107,21 @@ public class SignalSummary extends Fragment {
 
             }
         });
+        series.setColor(Color.rgb(226,26,199));
+        series2.setShape(PointsGraphSeries.Shape.POINT);
+        series2.setSize(9);
+        series2.setColor(Color.rgb(226,26,199));
 
-        //Log.i("data",Integer.toString(history.size()));
-        /*for(int i = 0; i < hist.size(); i++){
-            series.appendData(new DataPoint(i,hist.get(i)),false,20);
-        }*/
 
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(-70);
         graph.getViewport().setMaxY(-20);
         graph.getGridLabelRenderer().setNumVerticalLabels(6);
-        graph.getGridLabelRenderer().setNumHorizontalLabels(1+data.length/2);
-        //graph.getGridLabelRenderer().set
+        graph.getGridLabelRenderer().setNumHorizontalLabels(data.length);
+        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
+        graph.getViewport().setDrawBorder(true);
+        graph.getViewport().setBorderColor(Color.BLUE);
+
 
 
 

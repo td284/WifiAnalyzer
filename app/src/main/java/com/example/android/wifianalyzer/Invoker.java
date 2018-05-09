@@ -10,6 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.view.View;
+import android.widget.TextView;
+
 import processing.core.PApplet;
 
 
@@ -18,6 +25,8 @@ public class Invoker extends PApplet{
     private int CANVAS_HEIGHT_DEFAULT= 1200;//1000;
     public ForceDirectedGraph forceDirectedGraph;
     public MainActivity context;
+
+
 
     public Invoker(MainActivity context){
         this.context = context;
@@ -107,6 +116,9 @@ public class Invoker extends PApplet{
         }
 
 
+    }
+    public void updateLocation(double latitude, double longitude){
+        forceDirectedGraph.setLocation(latitude,longitude);
     }
 
     public int calculateStrength(int input, int numLevel){

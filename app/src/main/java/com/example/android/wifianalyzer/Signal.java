@@ -56,7 +56,7 @@ public class Signal implements Comparable {
         this.level = level;
         strength = WifiManager.calculateSignalLevel(level, 100);
         history.add(level);
-        while (history.size() > 20) {
+        while (history.size() > 21) {
             history.remove(0);
         }
     }

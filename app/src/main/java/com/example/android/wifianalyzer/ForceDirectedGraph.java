@@ -17,7 +17,7 @@ public class ForceDirectedGraph extends Viewport{
 
   private static final float TOTAL_KINETIC_ENERGY_DEFAULT = MAX_FLOAT;
   public static final float SPRING_CONSTANT_DEFAULT       = 0.1f;
-  public static final float COULOMB_CONSTANT_DEFAULT      = 7500.0f;
+  public static final float COULOMB_CONSTANT_DEFAULT      = 10000.0f;
   public static final float DAMPING_COEFFICIENT_DEFAULT   = 0.3f;
   public static final float TIME_STEP_DEFAULT             = 1.0f;
 
@@ -32,6 +32,10 @@ public class ForceDirectedGraph extends Viewport{
   private Node lockedNode;
   private List<int[]> colors;
 
+  private double latitude = 0;
+  private double longitude = 0;
+
+
   public ForceDirectedGraph(Invoker canvas, MainActivity context){
     super();
     this.nodes = new ArrayList<Node>();
@@ -43,6 +47,7 @@ public class ForceDirectedGraph extends Viewport{
     this.canvas = canvas;
     this.context = context;
     this.lockedNode = null;
+    canvas.text("latitude: ", this.getX(), this.getY());
 
     this.colors = new ArrayList<>();
     colors.add(new int[]{40,133,171});
@@ -156,10 +161,25 @@ public class ForceDirectedGraph extends Viewport{
 
   }
 
+  public void setLocation(double latitude, double longitude) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+
+
+  }
+
   public void draw(){
     this.totalKineticEnergy = this.calculateTotalKineticEnergy();
+    canvas.fill(255);
+    canvas.textSize(34);
+    String lat = Double.toString(latitude);
+    lat = lat.substring(0,Math.min(lat.startsWith("-")?6:5,lat.length()));
+    String lon = Double.toString(longitude);
+    lon = lon.substring(0,Math.min(lon.startsWith("-")?6:5,lon.length()));
+    canvas.text("latitude: "+ lat +"  longitude: "+ lon, this.getX(), this.getY());
 
-    canvas.strokeWeight(1.5f);
+
+    canvas.strokeWeight(5f);
     this.drawEdges();
     for(int i = 0; i < this.nodes.size(); i++) {
       this.nodes.get(i).draw(50 + i * 50);
@@ -169,6 +189,7 @@ public class ForceDirectedGraph extends Viewport{
     canvas.fill(0);
     canvas.textAlign(LEFT, TOP);
     float offset = canvas.textAscent() + canvas.textDescent();
+    //canvas.text("latitude: "+Double.toString(latitude)+"  longitude: "+ Double.toString(longitude), this.getX(), this.getY());
     /*canvas.text("Total Kinetic Energy: " + this.totalKineticEnergy, this.getX(), this.getY());
     canvas.text("Spring Constant: " + this.springConstant, this.getX(), this.getY() + offset);
     canvas.text("Coulomb Constant: " + this.coulombConstant, this.getX(), this.getY() + offset * 2.0f);
@@ -177,7 +198,7 @@ public class ForceDirectedGraph extends Viewport{
   }
 
   private void drawEdges(){
-    canvas.stroke(51, 51, 255);
+    canvas.stroke(255, 255, 255);
     for(int i = 0; i < this.nodes.size(); i++){
       Node node1 = this.nodes.get(i);
       for(int j = 0; j < node1.getSizeOfAdjacents(); j++){
@@ -271,13 +292,6 @@ public class ForceDirectedGraph extends Viewport{
   }
 
   public void onMouseMovedAt(int x, int y){
-    for(int i = 0; i < this.nodes.size(); i++){
-      Node node = this.nodes.get(i);
-      if(node.isIntersectingWith(x, y))
-        node.highlight();
-      else
-        node.dehighlight();
-    }
   }
 
   public void onMousePressedAt(int x, int y){
