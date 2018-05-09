@@ -3,14 +3,6 @@ package com.example.android.wifianalyzer;
 /**
  * Created by guanyuchen on 4/14/18.
  */
-import android.content.Context;
-import android.content.Intent;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
-import android.os.Handler;
-import android.util.Log;
-import android.view.Window;
-import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;

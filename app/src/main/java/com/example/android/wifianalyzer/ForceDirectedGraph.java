@@ -2,6 +2,7 @@ package com.example.android.wifianalyzer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -115,7 +116,7 @@ public class ForceDirectedGraph extends Viewport{
     float x = random(minXBound, maxXBound);
     float y = random(minYBound, maxYBound);
     float d = newNode.getMass() * nodeSizeRatio;
-    newNode.set(x, y, mass*30);
+    newNode.set(x, y, WifiManager.calculateSignalLevel(level,100)*3);
 
     for(int i = 0; i < nodes.size(); i++){
       if(nodes.get(i).getName().equals(newNode.getName())){
