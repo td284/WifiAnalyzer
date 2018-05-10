@@ -1,11 +1,15 @@
 package com.example.android.wifianalyzer;
 
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,6 +39,7 @@ public class SignalSummary extends Fragment {
     private TextView strength;
     private GraphView graph;
     private View color;
+    private TextView status;
     private LineGraphSeries<DataPoint> series;
     private PointsGraphSeries<DataPoint> series2;
 
@@ -48,6 +53,7 @@ public class SignalSummary extends Fragment {
         strength = view.findViewById(R.id.summary_strength);
         graph = view.findViewById(R.id.summary_graph);
         color = view.findViewById(R.id.summary_color);
+        status = view.findViewById(R.id.summary_status);
         series = new LineGraphSeries<DataPoint>(new DataPoint[] {});
         series2 = new PointsGraphSeries<DataPoint>(new DataPoint[] {});
 
@@ -68,6 +74,18 @@ public class SignalSummary extends Fragment {
         id.setText("id:\t" + node.getID());
         frequency.setText("Frequency:\t" + node.getFrequency());
         strength.setText("Strength:\t" + node.getLevel() + "dBm");
+        GradientDrawable drawable = (GradientDrawable) status.getBackground();
+
+        if (node.getLevel() > -67) {
+            status.setText("good");
+            drawable.setColor(Color.GREEN);
+        } else if (node.getLevel() > -70) {
+            status.setText("okay");
+            drawable.setColor(Color.YELLOW);
+        } else {
+            status.setText("bad");
+            drawable.setColor(Color.RED);
+        }
         ArrayList<Integer> history = node.getHist();
 
         int[] rgb = node.getColor();
