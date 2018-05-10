@@ -76,10 +76,10 @@ public class SignalSummary extends Fragment {
         strength.setText("Strength:\t" + node.getLevel() + "dBm");
         GradientDrawable drawable = (GradientDrawable) status.getBackground();
 
-        if (node.getLevel() > -45) {
+        if (node.getLevel() > -67) {
             status.setText("good");
             drawable.setColor(Color.GREEN);
-        } else if (node.getLevel() > -60) {
+        } else if (node.getLevel() > -70) {
             status.setText("okay");
             drawable.setColor(Color.YELLOW);
         } else {
