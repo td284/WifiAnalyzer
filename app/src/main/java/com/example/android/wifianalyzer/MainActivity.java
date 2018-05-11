@@ -341,10 +341,15 @@ public class MainActivity extends AppCompatActivity {
     public void startSignalSearch() {
         // for wifi
         mainWifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        mainWifi.startScan();
+        if(mainWifi.isWifiEnabled()) {
+            mainWifi.startScan();
+        }
         // for bluetooth
         mainBluetooth = BluetoothAdapter.getDefaultAdapter();
-        mainBluetooth.startDiscovery();
+        if((mainBluetooth != null) && (mainBluetooth.isEnabled())){
+            mainBluetooth.startDiscovery();
+        }
+
     }
 
     /*
