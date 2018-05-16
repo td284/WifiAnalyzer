@@ -295,14 +295,9 @@ public class ForceDirectedGraph extends Viewport{
   }
 
   public void onMousePressedAt(int x, int y){
-    System.out.println("---------------------------------");
     for(int i = 0; i < this.nodes.size(); i++){
       Node node = this.nodes.get(i);
       if(node.isIntersectingWith(x, y)){
-
-        //this.lockedNode = node;
-        //this.lockedNode.setVelocities(0.0f, 0.0f);
-
         context.setSummary(node);
         return;
       }

@@ -8,21 +8,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.view.View;
-import android.widget.TextView;
 
 import processing.core.PApplet;
 
 
 public class Invoker extends PApplet{
     private int CANVAS_WIDTH_DEFAULT= 720;
-    private int CANVAS_HEIGHT_DEFAULT= 1200;//1000;
+    private int CANVAS_HEIGHT_DEFAULT= 1200;
     public ForceDirectedGraph forceDirectedGraph;
     public MainActivity context;
 
@@ -119,17 +111,5 @@ public class Invoker extends PApplet{
     }
     public void updateLocation(double latitude, double longitude){
         forceDirectedGraph.setLocation(latitude,longitude);
-    }
-
-    public int calculateStrength(int input, int numLevel){
-        int MAX_RSSI = -30;
-        int MIN_RSSI = -80;
-        if(input<MIN_RSSI){
-            return 0;
-        } else if(input > MAX_RSSI){
-            return 99;
-        }else{
-            return (input-MIN_RSSI)*(numLevel - 1)/(MAX_RSSI - MIN_RSSI);
-        }
     }
 }

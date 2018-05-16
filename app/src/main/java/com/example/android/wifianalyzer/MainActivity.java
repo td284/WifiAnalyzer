@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 wifiSignals = updateWifi();
                 bluetoothSignals = updateBluetooth();
                 strongestSignals = joinSignals();
-                //Log.i("pac", "===================");
                 invoker.updateList(strongestSignals);
 
                 handler.postDelayed(this, 1000);
@@ -231,8 +230,6 @@ public class MainActivity extends AppCompatActivity {
 
         List<Signal> shortened = joinedSignals.subList(0,Math.min(5,joinedSignals.size()));
 
-        //Log.i("pac", "size: " + joinedSignals.size());
-
         HashMap<String, Signal> strongest = new HashMap<>();
 
         for (Signal signal : shortened) {
@@ -284,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
                 start();
             } else {
-                Log.i(permissionTag, "here");
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
                 requestLocationPermission();
             }
@@ -293,7 +289,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setSummary(Node node) {
-        Log.i("plooop", "-----------------------------------");
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         fm.beginTransaction()
                 .hide(base)
@@ -317,8 +312,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchToBase() {
-        Log.i("plooop", "-----------------------------------");
-
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         fm.beginTransaction()
                 .show(base)
@@ -384,20 +377,6 @@ public class MainActivity extends AppCompatActivity {
 
         Signal bluetoothSignal = new Signal(device, rssi);
         tempBluetoothSignals.put(device.getAddress(), bluetoothSignal);
-
-        /*Log.i(bluetoothTag,"name: " + device.getName() +
-                ", address: " + device.getAddress() +
-                "type: " + device.getType() +
-                "bond state: " + device.getBondState()
-
-        );*/
-
-        /*ParcelUuid[] a = device.getUuids();
-        for (int i = 0;i<a.length;i++) {
-            Log.i("bluetooth","Uuid-" + i + ": " + a[i].toString());
-
-        }
-        */
     }
 
     /*
